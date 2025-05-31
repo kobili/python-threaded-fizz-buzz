@@ -1,3 +1,6 @@
+import threading
+
+
 FIZZ_BUZZ_VALUE_FIZZ = "Fizz"
 FIZZ_BUZZ_VALUE_BUZZ = "Buzz"
 FIZZ_BUZZ_VALUE_FIZZ_BUZZ = "FizzBuzz"
@@ -24,6 +27,14 @@ class FizzBuzzFrequencyCounter:
             FIZZ_BUZZ_VALUE_BUZZ: self.buzz,
             FIZZ_BUZZ_VALUE_FIZZ_BUZZ: self.fizz_buzz,
         }
+
+
+class ThreadSafeFizzBuzzFreqCounter(FizzBuzzFrequencyCounter):
+    thread_lock = threading.Lock()
+
+    def update(self, value: str):
+        with self.thread_lock:
+            super().update(value)
 
 
 def fizz_or_buzz(n: int) -> str:
