@@ -30,11 +30,18 @@ class FizzBuzzFrequencyCounter:
 
 
 class ThreadSafeFizzBuzzFreqCounter(FizzBuzzFrequencyCounter):
-    thread_lock = threading.Lock()
+    def __init__(self):
+        super().__init__()
+        self.thread_lock = threading.Lock()
 
     def update(self, value: str):
         with self.thread_lock:
             super().update(value)
+
+    @property
+    def dict(self) -> dict[str, int]:
+        with self.thread_lock:
+            return super().dict
 
 
 def fizz_or_buzz(n: int) -> str:

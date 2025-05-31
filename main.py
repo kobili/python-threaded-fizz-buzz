@@ -37,7 +37,7 @@ atexit.register(on_exit)
 
 
 if __name__ == "__main__":
-    iterations = 200
+    iterations = 203
     n_threads = 2
 
     iterations_per_thread = iterations // n_threads
