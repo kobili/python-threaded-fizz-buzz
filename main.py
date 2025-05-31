@@ -1,37 +1,30 @@
 import time
 from typing import Callable
+import atexit
 
-
-def fizzOrBuzz(n: int) -> str:
-    if n % 3 == 0 and n % 5 == 0:
-        return "FizzBuzz"
-    if n % 3 == 0:
-        return "Fizz"
-    if n % 5 == 0:
-        return "Buzz"
-    
-    return str(n)
-
-
-def fizzOrBuzzException(n: int) -> str:
-    if n == 42:
-        raise ValueError("You've hit the secret number of the day")
-    
-    return fizzOrBuzz(n)
+from fizz_buzz import fizz_or_buzz, exceptional_fizz_or_buzz
 
 
 def main_loop(
     thread_name: str,
     func: Callable[[int], str],
+    iterations: int = 100,
 ):
-    while True:
-        for i in range(1, 101):
+    try:
+        for i in range(1, iterations+1):
             print(f"{thread_name}: {func(i)}")
             time.sleep(0.1)
+    except Exception as e:
+        print(f"{thread_name}: Failed with exception: {e}")
+        raise
 
-        print(f"{thread_name}: finished one fizz buzz iteration")
-        time.sleep(0.5)
+
+def on_exit():
+    print("goodbye, Cruel World!")
+
+
+atexit.register(on_exit)
 
 
 if __name__ == "__main__":
-    main_loop("main", fizzOrBuzzException)
+    main_loop("main", fizz_or_buzz)
