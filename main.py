@@ -47,7 +47,9 @@ if __name__ == "__main__":
 
     threads: list[threading.Thread] = []
     for i in range(0, n_threads):
+        # distribute remaining iterations evenly
         iterations_for_this_thread = iterations_per_thread + (1 if i < remainder_iterations else 0)
+
         threads.append(
             threading.Thread(
                 target=main_loop,
