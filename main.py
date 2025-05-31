@@ -1,10 +1,10 @@
 import atexit
-import time
+import threading
 from typing import Callable
 
 from fizz_buzz import (
     fizz_or_buzz,
-    exceptional_fizz_or_buzz,
+    # exceptional_fizz_or_buzz, # used to demonstrate what happens when a thread pops an unhandled exception
     ThreadSafeFizzBuzzFreqCounter,
     FizzBuzzFrequencyCounter,
 )
@@ -20,14 +20,12 @@ def main_loop(
     start: int = 1,
 ):
     try:
-        for i in range(start, iterations+1):
+        for i in range(start, start + iterations):
             value = func(i)
             print(f"{thread_name}: {i} -> {value}")
             fizz_buzz_frequencies.update(value)
-
-            # time.sleep(0.1)
-    except Exception as e:
-        print(f"{thread_name}: Failed with exception: {e}")
+    except Exception:
+        print(f"{thread_name}: Failed with exception")
         raise
 
 
@@ -37,9 +35,34 @@ def on_exit():
 
 atexit.register(on_exit)
 
-# without any exceptions
-# for 100 iterations we expect: {'Fizz': 27, 'Buzz': 14, 'FizzBuzz': 6}
-# for 200 iterations: {'Fizz': 53, 'Buzz': 27, 'FizzBuzz': 13}
 
 if __name__ == "__main__":
-    main_loop("main", fizz_or_buzz, iterations=200)
+    iterations = 200
+    n_threads = 2
+
+    iterations_per_thread = iterations // n_threads
+    remainder_iterations = iterations % n_threads
+
+    starting_iteration = 1
+
+    threads: list[threading.Thread] = []
+    for i in range(0, n_threads):
+        iterations_for_this_thread = iterations_per_thread + (1 if i < remainder_iterations else 0)
+        threads.append(
+            threading.Thread(
+                target=main_loop,
+                args=(f"thread{i}", fizz_or_buzz),
+                kwargs={
+                    "start": starting_iteration,
+                    "iterations": iterations_for_this_thread,
+                }
+            )
+        )
+
+        starting_iteration += iterations_for_this_thread
+
+    for thread in threads:
+        thread.start()
+
+    for thread in threads:
+        thread.join()
