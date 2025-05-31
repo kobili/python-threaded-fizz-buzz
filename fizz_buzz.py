@@ -1,10 +1,38 @@
+FIZZ_BUZZ_VALUE_FIZZ = "Fizz"
+FIZZ_BUZZ_VALUE_BUZZ = "Buzz"
+FIZZ_BUZZ_VALUE_FIZZ_BUZZ = "FizzBuzz"
+
+
+class FizzBuzzFrequencyCounter:
+    def __init__(self):
+        self.fizz = 0
+        self.buzz = 0
+        self.fizz_buzz = 0
+
+    def update(self, value: str):
+        if value == FIZZ_BUZZ_VALUE_FIZZ:
+            self.fizz += 1
+        elif value == FIZZ_BUZZ_VALUE_BUZZ:
+            self.buzz += 1
+        elif value == FIZZ_BUZZ_VALUE_FIZZ_BUZZ:
+            self.fizz_buzz += 1
+
+    @property
+    def dict(self) -> dict[str, int]:
+        return {
+            FIZZ_BUZZ_VALUE_FIZZ: self.fizz,
+            FIZZ_BUZZ_VALUE_BUZZ: self.buzz,
+            FIZZ_BUZZ_VALUE_FIZZ_BUZZ: self.fizz_buzz,
+        }
+
+
 def fizz_or_buzz(n: int) -> str:
     if n % 3 == 0 and n % 5 == 0:
-        return "FizzBuzz"
+        return FIZZ_BUZZ_VALUE_FIZZ_BUZZ
     if n % 3 == 0:
-        return "Fizz"
+        return FIZZ_BUZZ_VALUE_FIZZ
     if n % 5 == 0:
-        return "Buzz"
+        return FIZZ_BUZZ_VALUE_BUZZ
     
     return str(n)
 

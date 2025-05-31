@@ -2,7 +2,10 @@ import time
 from typing import Callable
 import atexit
 
-from fizz_buzz import fizz_or_buzz, exceptional_fizz_or_buzz
+from fizz_buzz import fizz_or_buzz, exceptional_fizz_or_buzz, FizzBuzzFrequencyCounter
+
+
+fizz_buzz_frequencies = FizzBuzzFrequencyCounter()
 
 
 def main_loop(
@@ -12,7 +15,10 @@ def main_loop(
 ):
     try:
         for i in range(1, iterations+1):
-            print(f"{thread_name}: {func(i)}")
+            value = func(i)
+            print(f"{thread_name}: {i} -> {value}")
+            fizz_buzz_frequencies.update(value)
+
             time.sleep(0.1)
     except Exception as e:
         print(f"{thread_name}: Failed with exception: {e}")
@@ -20,11 +26,11 @@ def main_loop(
 
 
 def on_exit():
-    print("goodbye, Cruel World!")
+    print(fizz_buzz_frequencies.dict)
 
 
 atexit.register(on_exit)
 
 
 if __name__ == "__main__":
-    main_loop("main", fizz_or_buzz)
+    main_loop("main", exceptional_fizz_or_buzz)
